@@ -5,7 +5,8 @@ import mk_functions
 import screen_coords
 from champion import Champion
 from game_assets import champion_data, full_items
-import comps
+# import comps
+from comps import Comps
 import ocr
 import arena_functions
 
@@ -16,8 +17,9 @@ class Arena:
         self.bench = [None, None, None, None, None, None, None, None, None]
         self.board = []
         self.board_unknown = []
-        self.unknown_slots = comps.get_unknown_slots()
-        self.champs_to_buy = comps.champions_to_buy()
+        self.comps = Comps(message_queue=message_queue)
+        self.unknown_slots = self.comps.get_unknown_slots()
+        self.champs_to_buy = self.comps.champions_to_buy()
         self.board_names = []
         self.items = []
         self.final_comp = False
@@ -36,10 +38,10 @@ class Arena:
 
     def bought_champion(self, name, slot):
         items = []
-        for item in comps.comp[name]["items"]:
+        for item in self.comps.comp[name]["items"]:
             items.append(item)
         self.bench[slot] = Champion(name, screen_coords.bench_loc[slot], items, slot,
-                                    champion_data[name]["Board Size"], comps.comp[name]["final_comp"])
+                                    champion_data[name]["Board Size"], self.comps.comp[name]["final_comp"])
         mk_functions.move_mouse(screen_coords.default_loc)
         sleep(0.5)
         self.fix_board_state()
@@ -53,14 +55,14 @@ class Arena:
 
     def move_known(self, champion):
         self.message_queue.put(("CONSOLE", f"Moving {champion.name} to board"))
-        destination = screen_coords.board_loc[comps.comp[champion.name]["board_position"]]
+        destination = screen_coords.board_loc[self.comps.comp[champion.name]["board_position"]]
         mk_functions.left_click(champion.coords)
         mk_functions.left_click(destination)
         champion.coords = destination
         self.board.append(champion)
         self.board_names.append(champion.name)
         self.bench[champion.index] = None
-        champion.index = comps.comp[champion.name]["board_position"]
+        champion.index = self.comps.comp[champion.name]["board_position"]
         self.board_size += champion.size
 
     def move_unknown(self):
@@ -231,28 +233,75 @@ class Arena:
         except TypeError:
             self.message_queue.put(("CONSOLE", "Tacticians Crown check failed"))
 
+    def buy_wanted_champions(self):
+        shop = arena_functions.get_shop()
+        self.message_queue.put(("CONSOLE", f"Shop: {shop}"))
+        for index, champion in enumerate(shop):
+            if champion in self.champs_to_buy:
+                if arena_functions.get_gold() - game_assets.champion_data[champion]["Gold"] >= 0:
+                    none_slot = arena_functions.empty_slot()
+                    if none_slot != -1:
+                        mk_functions.left_click(screen_coords.buy_loc[index])
+                        self.message_queue.put(("CONSOLE", f"Purchased {champion}"))
+                        self.bought_champion(champion, none_slot)
+                        self.champs_to_buy.remove(champion)
+
     def spend_gold(self):  # Rework this function
-        first_run = True
-        min_gold = 24 if self.spam_roll is True else 56
-        while first_run or arena_functions.get_gold() >= min_gold:
-            if not first_run:
-                if arena_functions.get_level() != 9:
+
+        #slowroll level 6
+        if self.comps.roll_level == 6:
+            first_run = True
+            min_gold = 13 if self.spam_roll is True else 56
+            while first_run or arena_functions.get_gold() >= min_gold:
+
+
+
+                # level to 6, slowrolling, leveling to 9
+                if not first_run and arena_functions.get_level() < self.comps.roll_level:
                     mk_functions.buy_xp()
                     self.message_queue.put(("CONSOLE", "   Purchasing XP"))
-                mk_functions.reroll()
-                self.message_queue.put(("CONSOLE", "   Rerolling shop"))
-            shop = arena_functions.get_shop()
-            self.message_queue.put(("CONSOLE", f"Shop: {shop}"))
-            for index, champion in enumerate(shop):
-                if champion in self.champs_to_buy:
-                    if arena_functions.get_gold() - game_assets.champion_data[champion]["Gold"] >= 0:
-                        none_slot = arena_functions.empty_slot()
-                        if none_slot != -1:
-                            mk_functions.left_click(screen_coords.buy_loc[index])
-                            self.message_queue.put(("CONSOLE", f"Purchased {champion}"))
-                            self.bought_champion(champion, none_slot)
-                            self.champs_to_buy.remove(champion)
-            first_run = False
+
+                # slowrolling
+                elif not first_run and arena_functions.get_level() == self.comps.roll_level and self.comps.do_slow_roll():
+                    mk_functions.reroll()
+                    self.message_queue.put(("CONSOLE", "   Rerolling shop"))
+
+                # Leveling to 9
+                elif not first_run and arena_functions.get_level() >= self.comps.roll_level:
+                    if arena_functions.get_level() != 9:
+                        mk_functions.buy_xp()
+                        self.message_queue.put(("CONSOLE", "   Purchasing XP"))
+                    mk_functions.reroll()
+                    self.message_queue.put(("CONSOLE", "   Rerolling shop"))
+
+                self.buy_wanted_champions()
+
+                first_run = False
+
+        #standard
+        else :
+            first_run = True
+            min_gold = 24 if self.spam_roll is True else 56
+            while first_run or arena_functions.get_gold() >= min_gold:
+                if not first_run:
+                    if arena_functions.get_level() != 9:
+                        mk_functions.buy_xp()
+                        self.message_queue.put(("CONSOLE", "   Purchasing XP"))
+                    mk_functions.reroll()
+                    self.message_queue.put(("CONSOLE", "   Rerolling shop"))
+                shop = arena_functions.get_shop()
+                self.message_queue.put(("CONSOLE", f"Shop: {shop}"))
+                for index, champion in enumerate(shop):
+                    if champion in self.champs_to_buy:
+                        if arena_functions.get_gold() - game_assets.champion_data[champion]["Gold"] >= 0:
+                            none_slot = arena_functions.empty_slot()
+                            if none_slot != -1:
+                                mk_functions.left_click(screen_coords.buy_loc[index])
+                                self.message_queue.put(("CONSOLE", f"Purchased {champion}"))
+                                self.bought_champion(champion, none_slot)
+                                self.champs_to_buy.remove(champion)
+                first_run = False
+
 
     def krug_round(self):
         if arena_functions.get_gold() >= 4:
@@ -265,14 +314,14 @@ class Arena:
             augments.append(augment)
 
         for augment in augments:
-            for potential in comps.priority_augments:
+            for potential in self.comps.priority_augments:
                 if potential in augment:
                     self.message_queue.put(("CONSOLE", f"Choosing priority augment {augment}"))
                     mk_functions.left_click(screen_coords.augment_loc[augments.index(augment)])
                     return
 
         for augment in augments:
-            for potential in comps.backup_augments:
+            for potential in self.comps.backup_augments:
                 if potential in augment:
                     self.message_queue.put(("CONSOLE", f"Choosing backup augment {augment}"))
                     mk_functions.left_click(screen_coords.augment_loc[augments.index(augment)])

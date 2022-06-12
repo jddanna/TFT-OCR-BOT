@@ -1,4 +1,5 @@
 import ui_color
+import pywintypes
 from win32gui import SetWindowLong, GetWindowLong, SetLayeredWindowAttributes
 from win32con import WS_EX_LAYERED, WS_EX_TRANSPARENT, GWL_EXSTYLE
 import tkinter as tk

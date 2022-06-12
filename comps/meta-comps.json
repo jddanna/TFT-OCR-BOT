@@ -1,0 +1,173 @@
+[
+  {
+    "name": "Astral Mages",
+    "comp": {
+      "Heimerdinger": {
+        "board_position": 2,
+        "items": [],
+        "level": 2,
+        "final_comp": true,
+        "key_unit" : false
+      },
+      "Nami": {
+        "board_position": 0,
+        "items": [
+          "RabadonsDeathcap",
+          "SpearofShojin",
+          "HextechGunblade"
+        ],
+        "level": 3,
+        "final_comp": true,
+        "key_unit": true
+      },
+      "Lulu": {
+        "board_position": 7,
+        "items": [],
+        "level": 2,
+        "final_comp": true,
+        "key_unit" : false
+      },
+      "Vladmir": {
+        "board_position": 8,
+        "items": [
+          "BrambleVest",
+          "DragonsClaw",
+          "WarmogsArmor"
+        ],
+        "level": 3,
+        "final_comp": true,
+        "key_unit" : true
+      },
+      "Bard": {
+        "board_position": 3,
+        "items": [],
+        "level": 2,
+        "final_comp": true,
+        "key_unit" : false
+      },
+      "Zoe": {
+        "board_position": 1,
+        "items": [],
+        "level": 2,
+        "final_comp": true,
+        "key_unit" : false
+      },
+      "Sylas": {
+        "board_position": 22,
+        "items": [],
+        "level": 2,
+        "final_comp": true,
+        "key_unit" : false
+      },
+      "Illaoi": {
+        "board_position": 24,
+        "items": [],
+        "level": 2,
+        "final_comp": true,
+        "key_unit" : false
+      },
+      "Skarner": {
+        "board_position": 22,
+        "items": [],
+        "level": 2,
+        "final_comp": false,
+        "key_unit" : false
+      },
+      "Tristana": {
+        "board_position": 6,
+        "items": [],
+        "level": 2,
+        "final_comp": false,
+        "key_unit" : false
+      },
+      "Lillia": {
+        "board_position": 23,
+        "items": [],
+        "level": 2,
+        "final_comp": false,
+        "key_unit" : false
+      },
+      "Ryze": {
+        "board_position": 1,
+        "items": [],
+        "level": 2,
+        "final_comp": false,
+        "key_unit" : false
+      }
+    },
+    "priority_augments": [
+      "Mage Crest",
+      "Urf's Grab Bag",
+      "Meditation",
+      "Luden's Echo",
+      "Celestial Blessing",
+      "Backfoot",
+      "Cybernetic Implants",
+      "Cybernetic Shell",
+      "Cybernetic Uplink",
+      "Disintegrator",
+      "Thrill of the Hunt",
+      "Electrocharge",
+      "Knife's Edge",
+      "Featherweights",
+      "Makeshift Armor",
+      "Underdogs",
+      "Second Wind",
+      "Tri Force",
+      "Weakspot",
+      "Rich Get Richer",
+      "Woodland Charm",
+      "Metabolic Accelerator",
+      "Wise Spending",
+      "Woodland Trinket",
+      "Sunfire Board"
+    ],
+    "backup_augments": [
+      "Arcane Nullifier",
+      "Ascension",
+      "Backfoot",
+      "Battlemage",
+      "Blue Battery",
+      "Celestial Blessing",
+      "Cybernetic Implants",
+      "Cybernetic Shell",
+      "Cybernetic Uplink",
+      "Disintegrator",
+      "Dominance",
+      "Electrocharge",
+      "Exiles",
+      "Featherweights",
+      "First Aid Kit",
+      "Item Grab Bag",
+      "Keepers",
+      "Knife's Edge",
+      "Luden's Echo",
+      "Makeshift Armor",
+      "Meditation",
+      "Phalanx",
+      "Second Wind",
+      "Stand United",
+      "Thrill of the Hunt",
+      "Tri Force",
+      "Underdogs",
+      "Weakspot",
+      "Binary Airdrop",
+      "Component Grab Bag",
+      "Metabolic Accelerator",
+      "Rich Get Richer",
+      "Salvage Bin",
+      "Sunfire Board",
+      "Titanic Force",
+      "Woodland Trinket",
+      "Wise Spending",
+      "Ardent Censer",
+      "High End Shopping"
+    ]
+  },
+  {
+    "name": "other comp",
+    "comp": "blank",
+    "priority_augments": "blank",
+    "backup_augments": "blank"
+  }
+]
